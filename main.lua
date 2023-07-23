@@ -8,12 +8,6 @@ if (getCEVersion==nil) or (getCEVersion()<RequiredCEVersion) then
 end
 getAutoAttachList().add("EoCApp.exe")
 
---these where throwing an error so they have been commented
---addresslist=getAddressList()
---memrec0=addresslist.getMemoryRecordByID(0)
-
-
-
 --Hotkey Script https://www.cheatengine.org/forum/viewtopic.php?t=602091&sid=50c9f9e1a64b033758025ebbfe7e8ca4
 
 local changeHotkeyKeysForm
@@ -236,6 +230,7 @@ function hotkeysSettings(action)
 
 end
 
+--Settings Variables
 local minDistVaL = "0"
 local minDist2Val = "0"
 local maxDistVal = "0"
@@ -253,7 +248,7 @@ local tactMinVal = "0"
 local tactMaxVal = "0"
 hotkeysSettings('DOS2DE\\CameraModHotkey')
 
---Varibles
+--Offset Varibles
 local app = "EoCApp.exe"
 local rax = "2959898"
 local baseAddress = "[" .. app .. "+" .. rax .. "]"
@@ -273,8 +268,8 @@ local camAngle2 = "CD0"
 local tactMin = "CB0"
 local tactMax = "CB4"
 local hud = "19"
---local hudOff = baseAddress .. hud
 
+--Hotkey Settings Save/Load
 function hotkeyLoad(sender)
   hotkeysSettings('DOS2DE\\CameraModHotkey')
   hotkeysSettings('load')
@@ -285,8 +280,7 @@ function hotkeySave(sender)
   hotkeysSettings('save')
 end
 
-
-
+--Values Settings Save/Load
 function settingLoad(sender)
   settings=getSettings('DOS2DE\\CameraModValue')
   minDistVaL=settings.Value['minDistVaL']
@@ -324,7 +318,6 @@ end
 
 function settingSave(sender)
   settings=getSettings('DOS2DE\\CameraModValue')
-
   settings.Value['minDistVaL']=getProperty(UDF1.SetMinVal,"Text")
   settings.Value['minDist2Val']=getProperty(UDF1.SetMinVal,"Text")
   settings.Value['maxDistVal']=getProperty(UDF1.SetMaxVal,"Text")
@@ -341,22 +334,20 @@ function settingSave(sender)
   settings.Value['camAngle2Val']=getProperty(UDF1.CameraAngle2Edit,"Text")
   settings.Value['tactMinVal']=getProperty(UDF1.SetTactMin,"Text")
   settings.Value['tactMaxVal']=getProperty(UDF1.SetTactMax,"Text")
-
 end
 
 
 --why tf didnt i combine all the read buttons? tf was i doing?
 --i did it for the the first setting and just kinda forgor?
---Hotkey Script End
---hotkey testing
---function onHotkey0(Hotkey)
---  playSound(gActivateSound)
---end
+--well id have to change the whole layout now so i think ill leave it
+
+
 
 --reads values from game to be show in left most text boxes
 function ButtonReadClick(sender)
   setProperty(UDF1.ReadMin,"Text", readFloat(baseAddress .. offsetMin))
   --setProperty(UDF1.ReadMin1,"Text", readFloat(baseAddress .. offsetMinn))
+  --removed since its a duplicate value and ill just set both with one
   setProperty(UDF1.ReadMax1,"Text", readFloat(baseAddress .. offsetMax))
   --setProperty(UDF1.ReadMax2,"Text", readFloat(baseAddress .. offsetMaxx))
 end
@@ -383,7 +374,7 @@ function ButtonDefaults(sender)
   writeFloat(baseAddress .. offsetMaxx, getProperty(UDF1.SetMaxVal,"Text"))
 end
 
---tactical view, its 2am
+--tactical view, its 2am why
 function SetMin1Click(sender)
   writeFloat(baseAddress .. tactMin, getProperty(UDF1.SetTactMin,"Text"))
 end
@@ -709,6 +700,85 @@ hk19=createHotkey(HideHUD, VK_CONTROL, VK_1)
 addChangeHotkeyKeysFunctionality(UDF1.hud_hotkey, hk19)
 generichotkey_onHotkey(hk19,HideHUD)
 
+local stopZoom = [[
+
+[ENABLE]
+
+aobscanmodule(talk,eocapp.exe,F3 0F 11 BF 1C 04 00 00) // should be unique
+alloc(newmem,$1000,talk)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  //movss [rdi+0000041C],xmm7
+  jmp return
+
+talk:
+  jmp newmem
+  nop 3
+return:
+registersymbol(talk)
+
+[DISABLE]
+
+talk:
+  db F3 0F 11 BF 1C 04 00 00
+
+unregistersymbol(talk)
+dealloc(newmem)
+
+]]
+
+local stopUnzoom = [[
+
+[ENABLE]
+
+aobscanmodule(leav,eocapp.exe,20 F3 0F 11 81 1C 04 00 00) // should be unique
+alloc(newmem,$1000,leav)
+
+label(code)
+label(return)
+
+newmem:
+
+code:
+  //movss [rcx+0000041C],xmm0
+  jmp return
+
+leav+01:
+  jmp newmem
+  nop 3
+return:
+registersymbol(leav)
+
+[DISABLE]
+
+leav+01:
+  db F3 0F 11 81 1C 04 00 00
+
+unregistersymbol(leav)
+dealloc(newmem)
+
+]]
+local scriptDisableInfo
+
+function zoomScript(sender)
+  if (UDF1.TalkZoom.State==cbChecked)then
+   local success1
+   local success2
+   success1, scriptDisableInfo1 = autoAssemble(stopZoom)
+   success2, scriptDisableInfo2 = autoAssemble(stopUnzoom)
+   else
+   autoAssemble(stopZoom, scriptDisableInfo1)
+   autoAssemble(stopUnzoom, scriptDisableInfo2)
+   scriptDisableInfo1 = nil
+   scriptDisableInfo2 = nil
+   end
+end
+
 
 --Hotkeys, this will be painful wont it, right?
 --no just fucking tedious appaerantly i wish i had written this in c#
@@ -731,4 +801,8 @@ function CloseClick()
   --called by the close button onClick event, and when closing the form
   closeCE()
   return caFree --onClick doesn't care, but onClose would like a result
+end
+
+function UDF1_TalkZoomChange(sender)
+
 end
