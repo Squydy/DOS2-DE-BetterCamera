@@ -236,10 +236,22 @@ function hotkeysSettings(action)
 
 end
 
-hotkeysSettings('DOS2DE\\CameraMod')
-hotkeysSettings('load')
-
---Hotkey Script End
+local minDistVaL = "0"
+local minDist2Val = "0"
+local maxDistVal = "0"
+local maxDist2Val = "0"
+local FOVVal = "0"
+local scrollSpeedVal = "0"
+local zoomSpeedVal = "0"
+local pitchMinVal = "0"
+local pitchMaxVal = "0"
+local pitchMinCVal = "0"
+local pitchMaxCVal = "0"
+local camAngle1Val = "0"
+local camAngle2Val = "0"
+local tactMinVal = "0"
+local tactMaxVal = "0"
+hotkeysSettings('DOS2DE\\CameraModHotkey')
 
 --Varibles
 local app = "EoCApp.exe"
@@ -261,10 +273,81 @@ local camAngle2 = "CD0"
 local tactMin = "CB0"
 local tactMax = "CB4"
 local hud = "19"
-local hudOff = baseAddress .. hud
+--local hudOff = baseAddress .. hud
+
+function hotkeyLoad(sender)
+  hotkeysSettings('DOS2DE\\CameraModHotkey')
+  hotkeysSettings('load')
+end
+
+function hotkeySave(sender)
+  hotkeysSettings('DOS2DE\\CameraMod')
+  hotkeysSettings('save')
+end
 
 
 
+function settingLoad(sender)
+  settings=getSettings('DOS2DE\\CameraModValue')
+  minDistVaL=settings.Value['minDistVaL']
+  --minDist2Val=settings.Value['minDist2Val']
+  maxDistVal=settings.Value['maxDistVal']
+  --maxDist2Val=settings.Value['maxDist2Val']
+  FOVVal=settings.Value['FOVVal']
+  scrollSpeedVal=settings.Value['scrollSpeedVal']
+  zoomSpeedVal=settings.Value['zoomSpeedVal']
+  pitchMinVal=settings.Value['pitchMinVal']
+  pitchMaxVal=settings.Value['pitchMaxVal']
+  pitchMinCVal=settings.Value['pitchMinCVal']
+  pitchMaxCVal=settings.Value['pitchMaxCVal']
+  camAngle1Val=settings.Value['camAngle1Val']
+  --camAngle2Val needs to be neagitve
+  camAngle2Val=settings.Value['camAngle2Val']
+  tactMinVal=settings.Value['tactMinVal']
+  tactMaxVal=settings.Value['tactMaxVal']
+  writeFloat(baseAddress .. offsetMin, minDistVaL)
+  writeFloat(baseAddress .. offsetMinn, minDistVaL)
+  writeFloat(baseAddress .. offsetMax, maxDistVal)
+  writeFloat(baseAddress .. offsetMaxx, maxDistVal)
+  writeFloat(baseAddress .. offsetFOV, FOVVal)
+  writeFloat(baseAddress .. scrollSpeed, scrollSpeedVal)
+  writeFloat(baseAddress .. zoomSpeed, zoomSpeedVal)
+  writeFloat(baseAddress .. pitchMin, pitchMinVal)
+  writeFloat(baseAddress .. pitchMax, pitchMaxVal)
+  writeFloat(baseAddress .. pitchMinC, pitchMinCVal)
+  writeFloat(baseAddress .. pitchMaxC, pitchMaxCVal)
+  writeFloat(baseAddress .. camAngle1, camAngle1Val)
+  writeFloat(baseAddress .. camAngle2, camAngle2Val)
+  writeFloat(baseAddress .. tactMin, tactMinVal)
+  writeFloat(baseAddress .. tactMax, tactMaxVal)
+end
+
+function settingSave(sender)
+  settings=getSettings('DOS2DE\\CameraModValue')
+
+  settings.Value['minDistVaL']=getProperty(UDF1.SetMinVal,"Text")
+  settings.Value['minDist2Val']=getProperty(UDF1.SetMinVal,"Text")
+  settings.Value['maxDistVal']=getProperty(UDF1.SetMaxVal,"Text")
+  settings.Value['maxDist2Val']=getProperty(UDF1.SetMaxVal,"Text")
+  settings.Value['FOVVal']=getProperty(UDF1.FOVEdit,"Text")
+  settings.Value['scrollSpeedVal']=getProperty(UDF1.ScrollSpeedEdit,"Text")
+  settings.Value['zoomSpeedVal']=getProperty(UDF1.ZoomSpeedEdit,"Text")
+  settings.Value['pitchMinVal']=getProperty(UDF1.PitchMinEdit,"Text")
+  settings.Value['pitchMaxVal']=getProperty(UDF1.PitchMaxEdit,"Text")
+  settings.Value['pitchMinCVal']=getProperty(UDF1.PitchMinCEdit,"Text")
+  settings.Value['pitchMaxCVal']=getProperty(UDF1.PitchMaxCEdit,"Text")
+  settings.Value['camAngle1Val']=getProperty(UDF1.CameraAngleEdit,"Text")
+  --camAngle2Val needs to be neagitve
+  settings.Value['camAngle2Val']=getProperty(UDF1.CameraAngle2Edit,"Text")
+  settings.Value['tactMinVal']=getProperty(UDF1.SetTactMin,"Text")
+  settings.Value['tactMaxVal']=getProperty(UDF1.SetTactMax,"Text")
+
+end
+
+
+--why tf didnt i combine all the read buttons? tf was i doing?
+--i did it for the the first setting and just kinda forgor?
+--Hotkey Script End
 --hotkey testing
 --function onHotkey0(Hotkey)
 --  playSound(gActivateSound)
@@ -428,7 +511,7 @@ function ButtonPchMinRead(sender)
 end
 
 function ButtonPchMinReset(sender)
-  UDF1.PitchMinEdit.Text = "0.54"
+  UDF1.PitchMinEdit.Text = "0.54073804616928"
   writeFloat(baseAddress .. pitchMin, getProperty(UDF1.PitchMinEdit,"Text"))
 end
 
@@ -460,7 +543,7 @@ function ButtonPchMaxRead(sender)
 end
 
 function ButtonPchMaxReset(sender)
-  UDF1.PitchMaxEdit.Text = "0.72"
+  UDF1.PitchMaxEdit.Text = "0.7169771194458"
   writeFloat(baseAddress .. pitchMax, getProperty(UDF1.PitchMaxEdit,"Text"))
 end
 
@@ -492,7 +575,7 @@ function ButtonPchMinCRead(sender)
 end
 
 function ButtonPchMinCReset(sender)
-  UDF1.PitchMinCEdit.Text = "0.54"
+  UDF1.PitchMinCEdit.Text = "0.54073804616928"
   writeFloat(baseAddress .. pitchMinC, getProperty(UDF1.PitchMinCEdit,"Text"))
 end
 
@@ -525,7 +608,7 @@ function ButtonPchMaxCRead(sender)
 end
 
 function ButtonPchMaxCReset(sender)
-  UDF1.PitchMaxCEdit.Text = "0.76"
+  UDF1.PitchMaxCEdit.Text = "0.75659638643265"
   writeFloat(baseAddress .. pitchMaxC, getProperty(UDF1.PitchMaxCEdit,"Text"))
 end
 
@@ -557,7 +640,7 @@ function ButtonCamAngRead(sender)
 end
 
 function ButtonCamAngReset(sender)
-  UDF1.CameraAngleEdit.Text = "30"
+  UDF1.CameraAngleEdit.Text = "0.59481185674667"
   writeFloat(baseAddress .. camAngle1, getProperty(UDF1.CameraAngleEdit,"Text"))
 end
 
@@ -590,7 +673,7 @@ function ButtonCamAng2Read(sender)
 end
 
 function ButtonCamAng2Reset(sender)
-  UDF1.CameraAngle2Edit.Text = "-0.3"
+  UDF1.CameraAngle2Edit.Text = "-0.59481185674667"
   writeFloat(baseAddress .. camAngle2, getProperty(UDF1.CameraAngle2Edit,"Text"))
 end
 
