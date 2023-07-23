@@ -28,13 +28,15 @@ local pitchMinC = "CE4"
 local pitchMaxC = "CD8"
 local camAngle1 = "CC8"
 local camAngle2 = "CD0"
+local tactMin = "CB0"
+local tactMax = "CB4"
 
 --reads values from game to be show in left most text boxes
 function ButtonReadClick(sender)
   setProperty(UDF1.ReadMin,"Text", readFloat(baseAddress .. offsetMin))
-  setProperty(UDF1.ReadMin1,"Text", readFloat(baseAddress .. offsetMinn))
+  --setProperty(UDF1.ReadMin1,"Text", readFloat(baseAddress .. offsetMinn))
   setProperty(UDF1.ReadMax1,"Text", readFloat(baseAddress .. offsetMax))
-  setProperty(UDF1.ReadMax2,"Text", readFloat(baseAddress .. offsetMaxx))
+  --setProperty(UDF1.ReadMax2,"Text", readFloat(baseAddress .. offsetMaxx))
 end
 
 --sets in game values with right minimum text box
@@ -58,6 +60,30 @@ function ButtonDefaults(sender)
   writeFloat(baseAddress .. offsetMax, getProperty(UDF1.SetMaxVal,"Text"))
   writeFloat(baseAddress .. offsetMaxx, getProperty(UDF1.SetMaxVal,"Text"))
 end
+
+--tactical view, its 2am
+function SetMin1Click(sender)
+  writeFloat(baseAddress .. tactMin, getProperty(UDF1.SetTactMin,"Text"))
+end
+
+function SetMax1Click(sender)
+  writeFloat(baseAddress .. tactMax, getProperty(UDF1.SetTactMax,"Text"))
+end
+
+function TactRead(sender)
+  setProperty(UDF1.ReadTactMin,"Text", readFloat(baseAddress .. tactMin))
+  setProperty(UDF1.ReadTactMax,"Text", readFloat(baseAddress .. tactMax))
+end
+
+function DefaultsClick(sender)
+  UDF1.SetTactMin.Text = "6.0"
+  UDF1.SetTactMax.Text = "25.0"
+  writeFloat(baseAddress .. tactMin, getProperty(UDF1.SetTactMin,"Text"))
+  writeFloat(baseAddress .. tactMax, getProperty(UDF1.SetTactMax,"Text"))
+  setProperty(UDF1.ReadTactMin,"Text", readFloat(baseAddress .. tactMin))
+  setProperty(UDF1.ReadTactMax,"Text", readFloat(baseAddress .. tactMax))
+end
+
 
 --read fov
 function ButtonFOVReadClick(sender)
