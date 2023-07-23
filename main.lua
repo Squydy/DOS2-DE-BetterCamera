@@ -15,46 +15,52 @@ getAutoAttachList().add("EoCApp.exe")
 --addresslist=getAddressList()
 --memrec0=addresslist.getMemoryRecordByID(0)
 
+--Varibles
+local baseAddress = "[EoCApp.exe+2959898]"
+local offsetMin = "C40"
+local offsetMax = "C44"
+local offsetMaxx = "C48"
+local offsetFOV = "C74"
 
 --reads values from game to be show in left most text boxes
 function ButtonReadClick(sender)
-  setProperty(UDF1.ReadMin,"Text", readFloat("[EoCApp.exe+2959898]+C40"))
-  setProperty(UDF1.ReadMax1,"Text", readFloat("[EoCApp.exe+2959898]+C44"))
-  setProperty(UDF1.ReadMax2,"Text", readFloat("[EoCApp.exe+2959898]+C48"))
+  setProperty(UDF1.ReadMin,"Text", readFloat(baseAddress .. offsetMin))
+  setProperty(UDF1.ReadMax1,"Text", readFloat(baseAddress .. offsetMax))
+  setProperty(UDF1.ReadMax2,"Text", readFloat(baseAddress .. offsetMaxx))
 end
 
 --sets in game values with right minimum text box
 function ButtonSetMinClick(sender)
-  writeFloat("[EoCApp.exe+2959898]+C40", getProperty(UDF1.SetMinVal,"Text"))
+  writeFloat(baseAddress .. offsetMin, getProperty(UDF1.SetMinVal,"Text"))
 end
 
 --sets in game values with right maximum text box
 function ButtonSetMaxClick(sender)
-  writeFloat("[EoCApp.exe+2959898]+C44", getProperty(UDF1.SetMaxVal,"Text"))
-  writeFloat("[EoCApp.exe+2959898]+C48", getProperty(UDF1.SetMaxVal,"Text"))
+  writeFloat(baseAddress .. offsetMax, getProperty(UDF1.SetMaxVal,"Text"))
+  writeFloat(baseAddress .. offsetMaxx, getProperty(UDF1.SetMaxVal,"Text"))
 end
 
 --sets both text boxes to default values then applies them to game to reset to defaults
 function ButtonDefaults(sender)
   UDF1.SetMinVal.Text = '5.5'
   UDF1.SetMaxVal.Text = '19'
-  writeFloat("[EoCApp.exe+2959898]+C40", getProperty(UDF1.SetMinVal,"Text"))
-  writeFloat("[EoCApp.exe+2959898]+C44", getProperty(UDF1.SetMaxVal,"Text"))
-  writeFloat("[EoCApp.exe+2959898]+C48", getProperty(UDF1.SetMaxVal,"Text"))
+  writeFloat(baseAddress .. offsetMin, getProperty(UDF1.SetMinVal,"Text"))
+  writeFloat(baseAddress .. offsetMax, getProperty(UDF1.SetMaxVal,"Text"))
+  writeFloat(baseAddress .. offsetMaxx, getProperty(UDF1.SetMaxVal,"Text"))
 end
 
 --read fov
 function ButtonFOVReadClick(sender)
-  setProperty(UDF1.FOVEdit,"Text", readFloat("[EoCApp.exe+2959898]+C74"))
+  setProperty(UDF1.FOVEdit,"Text", readFloat(baseAddress .. offsetFOV))
 end
 --write fov
 function ButtonFOVSetClick(sender)
-  writeFloat("[EoCApp.exe+2959898]+C74", getProperty(UDF1.FOVEdit,"Text"))
+  writeFloat(baseAddress .. offsetFOV, getProperty(UDF1.FOVEdit,"Text"))
 end
 --reset fov
 function ButtonFOVResetClick(sender)
   UDF1.FOVEdit.Text = '45'
-  writeFloat("[EoCApp.exe+2959898]+C74", getProperty(UDF1.FOVEdit,"Text"))
+  writeFloat(baseAddress .. offsetFOV, getProperty(UDF1.FOVEdit,"Text"))
 end
 
 
