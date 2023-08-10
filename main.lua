@@ -550,7 +550,7 @@ function PitchMaxHotDec(sender)
   writeFloat(baseAddress .. pitchMax, readFloat(baseAddress .. pitchMax) - getProperty(UDF1.PitchMaxInc,"Text"))
   setProperty(UDF1.PitchMaxEdit,"Text", readFloat(baseAddress .. pitchMax))
 end
-hk10=createHotkey(FOVHotDec, VK_CONTROL, VK_NUMPAD1)
+hk10=createHotkey(PitchMaxHotDec, VK_CONTROL, VK_NUMPAD1)
 addChangeHotkeyKeysFunctionality(UDF1.pitchmax_dec_hotkey, hk10)
 generichotkey_onHotkey(hk10,PitchMaxHotDec)
 
@@ -801,8 +801,4 @@ function CloseClick()
   --called by the close button onClick event, and when closing the form
   closeCE()
   return caFree --onClick doesn't care, but onClose would like a result
-end
-
-function UDF1_TalkZoomChange(sender)
-
 end
